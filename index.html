@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html lang="en">
+ <head>
+  <title>Harmonograph</title>
+  <script src="harmonograph.js"></script>
+  <style>
+body {
+    background: #CCC;
+}
+
+canvas {
+    border: 2px solid #600;
+    border-radius: 5px;
+    background: white;
+}
+
+#cvss {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#cvs {
+    width: 500px;
+    height: 500px;
+    flex: 0 0 500px;
+}
+
+#wave-cvss {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    padding: 10px;
+}
+
+.wave-cvs {
+    width: 100%;
+    height: 150px;
+}
+
+fieldset {
+    border-radius: 5px;
+    background-color: white;
+    border: 2px solid #600;
+    margin-top: 20px;
+}
+
+legend {
+    background-color: #600;
+    border-radius: 2px;
+    color: white;
+}
+
+#properties {
+    clear: both;
+}
+
+.help {
+    text-decoration: underline dotted;
+    cursor: help;
+}
+
+#more-properties-container {
+    display: flex;
+}
+  </style>
+ </head>
+ <body>
+  <div id="cvss">
+   <canvas id="cvs" width="500" height="500"></canvas>
+   <div id="wave-cvss">
+    <canvas class="wave-cvs" id="w1-cvs"></canvas>
+    <canvas class="wave-cvs" id="w2-cvs"></canvas>
+    <canvas class="wave-cvs" id="w3-cvs"></canvas>
+   </div>
+  </div>
+  <form id="properties">
+   <input type="button" value="Animate" id="animate" />
+   <input type="button" value="Plot" id="plot" />
+
+   <div id="more-properties-container">
+   <fieldset>
+    <legend>Oscillator properties</legend>
+    <table>
+     <thead>
+      <tr>
+       <th></th>
+       <th>x value</th>
+       <th>y value</th>
+      </tr>
+     </thead>
+     <tbody>
+      <tr>
+       <td>Frequency</td>
+       <td><input type="number" value="2" step="0.001" class="plot-update" id="x-freq" /></td>
+       <td><input type="number" value="3" step="0.001" class="plot-update" id="y-freq" /></td>
+      </tr>
+      <tr>
+       <td>Amplitude</td>
+       <td><input type="number" value="1" min="0" step="0.001" max="1" class="plot-update" id="x-amp" /></td>
+       <td><input type="number" value="1" min="0" step="0.001" max="1" class="plot-update" id="y-amp" /></td>
+      </tr>
+      <tr class="help" title="Phase shift in multiples of full cycles.">
+       <td>Phase (&times;2&pi;)</td>
+       <td><input type="number" value="0" step="0.001" class="plot-update" id="x-phase" /></td>
+       <td><input type="number" value="0" step="0.001" class="plot-update" id="y-phase" /></td>
+      </tr>
+      <tr>
+       <td>Damping</td>
+       <td><input type="number" value="0" min="0" step="0.001" max="1" class="plot-update" id="x-damp" /></td>
+       <td><input type="number" value="0" min="0" step="0.001" max="1" class="plot-update" id="y-damp" /></td>
+      </tr>
+     </tbody>
+    </table>
+   </fieldset>
+    <fieldset>
+     <legend>Animation properties</legend>
+     <table>
+      <tbody>
+       <tr>
+        <td>Trail length</td>
+        <td><input type="number" value="50" min="0" step="1" class="plot-update" id="trail-len" /></td>
+       </tr>
+       <tr>
+        <td>Resolution</td>
+        <td><input type="number" min="0.001" value="0.02" step="0.001" class="plot-update" id="dt" /></td>
+       </tr>
+      </tbody>
+     </table>
+    </fieldset>
+    <fieldset>
+     <legend>Static plot properties</legend>
+     <table>
+      <tbody>
+       <tr class="help" title="6.3 (roughly 2*pi) suffices for integer ratios. Increase this to get longer paths for non-integer ratios.">
+        <td>Plot length</td>
+        <td><input type="number" value="6.3" min="0" step="0.01" class="plot-update" id="plot-len" /></td>
+       </tr>
+       <tr>
+        <td>Resolution</td>
+        <td><input type="number" min="0.001"value="0.01" step="0.001" class="plot-update" id="plot-res" /></td>
+       </tr>
+      </tbody>
+     </table>
+    </fieldset>
+    <fieldset>
+     <legend>Other properties</legend>
+     <table>
+      <tbody>
+       <tr>
+        <td>Colour</td>
+        <td><input type="color" value="#660000" class="plot-update" id="colour" /></td>
+       </tr>
+      </tbody>
+     </table>
+    </fieldset>
+    <fieldset>
+     <legend>Presets</legend>
+     <select id="preset-list" size="7"></select>
+    </fieldset>
+   </div>
+  </form>
+ </body>
+</html>
