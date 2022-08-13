@@ -3,6 +3,7 @@
 <html lang="en">
  <head>
   <title>Harmonograph</title>
+  <script src="letters.js"></script>
   <script src="harmonograph.js"></script>
   <style>
 body {
@@ -13,6 +14,7 @@ canvas {
     border: 2px solid #600;
     border-radius: 5px;
     background: white;
+    box-shadow: 3px 3px grey;
 }
 
 #cvss {
@@ -46,6 +48,8 @@ fieldset {
     background-color: white;
     border: 2px solid #600;
     margin-top: 20px;
+    box-shadow: 3px 3px grey;
+    margin-right: 10px;
 }
 
 legend {
@@ -66,6 +70,20 @@ legend {
 #more-properties-container {
     display: flex;
 }
+
+input[type="number"] {
+    width: 80px;
+}
+
+input[type="button"] {
+    background: #600;
+    border-radius: 5px;
+    padding: 5px;
+    color: white;
+    cursor: pointer;
+    border-width: 3px;
+    border-color: #600;
+}
   </style>
  </head>
  <body>
@@ -80,10 +98,12 @@ legend {
   <form id="properties">
    <input type="button" value="Animate" id="animate" />
    <input type="button" value="Plot" id="plot" />
+   <input type="button" value="Play" id="play" />
+   <span id="trunc-warn" class="help"></span>
 
    <div id="more-properties-container">
    <fieldset>
-    <legend>Oscillator properties</legend>
+    <legend>Waveform properties</legend>
     <table>
      <thead>
       <tr>
@@ -103,15 +123,15 @@ legend {
        <td><input type="number" value="1" min="0" step="0.001" max="1" class="plot-update" id="x-amp" /></td>
        <td><input type="number" value="1" min="0" step="0.001" max="1" class="plot-update" id="y-amp" /></td>
       </tr>
-      <tr class="help" title="Phase shift in multiples of full cycles.">
-       <td>Phase (&times;2&pi;)</td>
+      <tr>
+       <td><span class="help" title="Phase shift in multiples of full cycles.">Phase</span> (&times;2&pi;)</td>
        <td><input type="number" value="0" step="0.001" class="plot-update" id="x-phase" /></td>
        <td><input type="number" value="0" step="0.001" class="plot-update" id="y-phase" /></td>
       </tr>
       <tr>
        <td>Damping</td>
-       <td><input type="number" value="0" min="0" step="0.001" max="1" class="plot-update" id="x-damp" /></td>
-       <td><input type="number" value="0" min="0" step="0.001" max="1" class="plot-update" id="y-damp" /></td>
+       <td><input type="number" value="0" min="0" step="0.00001" max="1" class="plot-update" id="x-damp" /></td>
+       <td><input type="number" value="0" min="0" step="0.00001" max="1" class="plot-update" id="y-damp" /></td>
       </tr>
      </tbody>
     </table>
@@ -122,11 +142,11 @@ legend {
       <tbody>
        <tr>
         <td>Trail length</td>
-        <td><input type="number" value="50" min="0" step="1" class="plot-update" id="trail-len" /></td>
+        <td><input type="number" value="100" min="0" step="1" class="plot-update" id="trail-len" /></td>
        </tr>
        <tr>
         <td>Resolution</td>
-        <td><input type="number" min="0.001" value="0.02" step="0.001" class="plot-update" id="dt" /></td>
+        <td><input type="number" min="0.0000001" value="0.01" step="0.0000001" class="plot-update" id="dt" /></td>
        </tr>
       </tbody>
      </table>
@@ -135,13 +155,24 @@ legend {
      <legend>Static plot properties</legend>
      <table>
       <tbody>
-       <tr class="help" title="6.3 (roughly 2*pi) suffices for integer ratios. Increase this to get longer paths for non-integer ratios.">
-        <td>Plot length</td>
-        <td><input type="number" value="6.3" min="0" step="0.01" class="plot-update" id="plot-len" /></td>
+       <tr>
+        <td><span class="help"  title="Plots may be truncated if the frequency contains non-integer values or for performance reasons. Increase this to extend the plot, at the cost of render time.">Plot length</span> (&times;2&pi;)</td>
+        <td><input type="number" value="1" min="0" step="0.01" class="plot-update" id="plot-len" /></td>
        </tr>
        <tr>
         <td>Resolution</td>
-        <td><input type="number" min="0.001"value="0.01" step="0.001" class="plot-update" id="plot-res" /></td>
+        <td><input type="number" min="0.0000001" value="0.01" step="0.0000001" class="plot-update" id="plot-res" /></td>
+       </tr>
+      </tbody>
+     </table>
+    </fieldset>
+    <fieldset>
+     <legend>Audio properties</legend>
+     <table>
+      <tbody>
+       <tr>
+        <td>Length [s]</td>
+        <td><input type="number" min="0.1" step="0.1" value="2" class="plot-update" id="audio-len" /></td>
        </tr>
       </tbody>
      </table>
@@ -154,14 +185,19 @@ legend {
         <td>Colour</td>
         <td><input type="color" value="#660000" class="plot-update" id="colour" /></td>
        </tr>
+       <tr>
+        <td>Rachel mode</td>
+        <td><input type="radio" value="on" class="plot-update" id="rachel-on" name="rachel" /> On</td>
+        <td><input type="radio" value="off" class="plot-update" id="rachel-off" checked="checked" name="rachel" /> Off</td>
+       </tr>
       </tbody>
      </table>
     </fieldset>
-    <fieldset>
-     <legend>Presets</legend>
-     <select id="preset-list" size="7"></select>
-    </fieldset>
    </div>
+   <fieldset>
+    <legend>Presets</legend>
+    <select id="preset-list" size="7"></select>
+   </fieldset>
   </form>
  </body>
 </html>
