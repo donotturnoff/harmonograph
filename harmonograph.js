@@ -29,7 +29,7 @@ let xPhase, yPhase;
 let xDamp, yDamp;
 let r, g, b, trailCols, plotCol;
 let mode;
-let audio, audioLen;
+let audio, audioLen, source;
 let f = Math.sin;
 
 const presets = {
@@ -232,6 +232,11 @@ function addNote(buf, name, len, time, bps, f, volume) {
 }
 
 function playAudio() {
+    const play = document.getElementById("play");
+    play.value = "Stop";
+    play.removeEventListener("click", playAudio);
+    play.addEventListener("click", stopAudio);
+
     let buf;
     const rate = audio.sampleRate;
     if (!rachel) {
@@ -310,10 +315,19 @@ function playAudio() {
     }
     let buffer = audio.createBuffer(1, buf.length, rate)
     buffer.copyToChannel(buf, 0)
-    let source = audio.createBufferSource();
+    source = audio.createBufferSource();
     source.buffer = buffer;
+    source.addEventListener("ended", stopAudio);
     source.connect(audio.destination);
-    source.start(0);
+    source.start();
+}
+
+function stopAudio() {
+    const play = document.getElementById("play");
+    play.value = "Play";
+    play.removeEventListener("click", stopAudio);
+    play.addEventListener("click", playAudio);
+    source.stop();
 }
 
 function plot() {
